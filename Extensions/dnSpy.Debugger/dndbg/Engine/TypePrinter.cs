@@ -143,11 +143,11 @@ namespace dndbg.Engine {
 		public TypePrinter(ITypeOutput output, TypePrinterFlags flags, Func<DnEval> getEval = null) {
 			this.output = output;
 			this.flags = flags;
-			this.dictMetaDataImport = null;
-			this.recursionCounter = 0;
-			this.lineLength = 0;
-			this.outputLengthExceeded = false;
-			this.forceWrite = false;
+			dictMetaDataImport = null;
+			recursionCounter = 0;
+			lineLength = 0;
+			outputLengthExceeded = false;
+			forceWrite = false;
 			this.getEval = getEval;
 		}
 
@@ -899,7 +899,7 @@ namespace dndbg.Engine {
 				}
 				WriteIdentifier(field.GetName(), GetTypeColor(field, type, fieldAttrs));
 				WriteTokenComment(field.Token);
-				if (this.ShowFieldLiteralValues) {
+				if (ShowFieldLiteralValues) {
 					object c;
 					if ((fieldAttrs & FieldAttributes.Literal) != 0 && (c = field.GetConstant()) != null) {
 						WriteSpace();
@@ -1352,7 +1352,7 @@ namespace dndbg.Engine {
 						Write(ma, typeGenArgs, methGenArgs, emptyTokenAndNameList, emptyTokenAndNameList);
 					}
 					else {
-						var type = arg.ExactType;
+						var type = arg?.ExactType;
 						if (type != null) {
 							if (type.ElementType == CorElementType.ByRef) {
 								OutputWrite(isCSharpOut ? "out" : "ref", TypeColor.Keyword);
@@ -1362,7 +1362,7 @@ namespace dndbg.Engine {
 							Write(type);
 						}
 						else {
-							var cls = arg.Class;
+							var cls = arg?.Class;
 							if (cls != null)
 								Write(cls);
 							else

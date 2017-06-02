@@ -258,7 +258,7 @@ namespace dnSpy.Documents.Tabs.DocViewer {
 			if (textView == null)
 				throw new ArgumentNullException(nameof(textView));
 			this.textView = textView;
-			this.bracePairCollection = BracePairCollection.Empty;
+			bracePairCollection = BracePairCollection.Empty;
 			textView.Closed += TextView_Closed;
 			textView.Options.OptionChanged += Options_OptionChanged;
 			UpdateBraceMatching();
@@ -326,14 +326,10 @@ namespace dnSpy.Documents.Tabs.DocViewer {
 		void RefreshTags(BracePairResultCollection? a, BracePairResultCollection? b) {
 			if (a != null) {
 				RefreshTags(a.Value.First);
-				RefreshTags(a.Value.First);
-				RefreshTags(a.Value.Second);
 				RefreshTags(a.Value.Second);
 			}
 			if (b != null) {
 				RefreshTags(b.Value.First);
-				RefreshTags(b.Value.First);
-				RefreshTags(b.Value.Second);
 				RefreshTags(b.Value.Second);
 			}
 		}

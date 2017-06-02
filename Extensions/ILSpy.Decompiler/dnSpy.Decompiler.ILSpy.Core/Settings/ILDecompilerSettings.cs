@@ -30,10 +30,10 @@ namespace dnSpy.Decompiler.ILSpy.Core.Settings {
 
 		public ILDecompilerSettings(ILSettings ilSettings = null) {
 			this.ilSettings = ilSettings ?? new ILSettings();
-			this.options = CreateOptions().ToArray();
+			options = CreateOptions().ToArray();
 		}
 
-		public override DecompilerSettingsBase Clone() => new ILDecompilerSettings(this.ilSettings.Clone());
+		public override DecompilerSettingsBase Clone() => new ILDecompilerSettings(ilSettings.Clone());
 
 		public override IEnumerable<IDecompilerOption> Options => options;
 		readonly IDecompilerOption[] options;
@@ -63,6 +63,11 @@ namespace dnSpy.Decompiler.ILSpy.Core.Settings {
 						() => ilSettings.SortMembers, a => ilSettings.SortMembers = a) {
 				Description = dnSpy_Decompiler_ILSpy_Core_Resources.DecompilerSettings_SortMethods,
 				Name = DecompilerOptionConstants.SortMembers_NAME,
+			};
+			yield return new DecompilerOption<bool>(DecompilerOptionConstants.ShowPdbInfo_GUID,
+						() => ilSettings.ShowPdbInfo, a => ilSettings.ShowPdbInfo = a) {
+				Description = dnSpy_Decompiler_ILSpy_Core_Resources.DecompilerSettings_ShowPdbInfo,
+				Name = DecompilerOptionConstants.ShowPdbInfo_NAME,
 			};
 		}
 

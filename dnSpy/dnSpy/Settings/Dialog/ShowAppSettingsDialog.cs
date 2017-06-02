@@ -118,10 +118,6 @@ namespace dnSpy.Settings.Dialog {
 
 			pageContext.TreeView = CreateTreeView(rootVM);
 
-			var selectedItem = (guid != null ? allPages.FirstOrDefault(a => a.Page.Guid == guid.Value) : null) ?? rootVM.Children.FirstOrDefault();
-			if (selectedItem != null)
-				pageContext.TreeView.SelectItems(new[] { selectedItem });
-
 			appSettingsDlg = new AppSettingsDlg();
 			appSettingsDlg.DataContext = this;
 			InitializeKeyboardBindings();
@@ -129,8 +125,19 @@ namespace dnSpy.Settings.Dialog {
 			ContentConverterProperties.SetContentConverter(appSettingsDlg, this);
 			ContentConverterProperties.SetContentConverterVersion(appSettingsDlg, converterVersion);
 			appSettingsDlg.Owner = ownerWindow;
+
+			AppSettingsPageVM selectedItem = null;
+			if (guid != null)
+				selectedItem = allPages.FirstOrDefault(a => a.Page.Guid == guid.Value);
+			if (selectedItem == null)
+				selectedItem = rootVM.Children.FirstOrDefault();
+			if (guid == null && selectedItem != null)
+				selectedItem = selectedItem.VisiblePage;
+			if (selectedItem != null)
+				pageContext.TreeView.SelectItems(new[] { selectedItem });
+
 			bool saveSettings = appSettingsDlg.ShowDialog() == true;
-			LastSelectedGuid = (pageContext.TreeView.SelectedItem as AppSettingsPageVM)?.Page.Guid;
+			LastSelectedGuid = (pageContext.TreeView.SelectedItem as AppSettingsPageVM)?.VisiblePage.Page.Guid;
 
 			var appRefreshSettings = new AppRefreshSettings();
 			if (saveSettings) {
@@ -264,11 +271,11 @@ namespace dnSpy.Settings.Dialog {
 			textContent = UIHelpers.RemoveAccessKeys(textContent);
 
 			// Quick check here because access keys aren't shown if we return a TextBlock
-			if (!this.pageContext.SearchMatcher.IsMatchAny(textContent))
+			if (!pageContext.SearchMatcher.IsMatchAny(textContent))
 				return null;
 
 			const bool colorize = true;
-			var context = new AppSettingsTextClassifierContext(this.pageContext.SearchMatcher, textContent, PredefinedTextClassifierTags.OptionsDialogText, colorize);
+			var context = new AppSettingsTextClassifierContext(pageContext.SearchMatcher, textContent, PredefinedTextClassifierTags.OptionsDialogText, colorize);
 			return textElementProvider.CreateTextElement(classificationFormatMap, context, ContentTypes.OptionsDialogText, GetTextFlags(ownerControl));
 		}
 
